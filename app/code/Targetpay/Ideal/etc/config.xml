@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <ideal>
+                <sort_order>1</sort_order>
+                <active>1</active>
+                <rtlo>93929</rtlo> <!-- // Default TargetPay -->
+                <order_status>1</order_status>
+                <complete_status>4</complete_status>
+                <autocreate_invoice>1</autocreate_invoice>
+                <model>Targetpay\Ideal\Model\Ideal</model>
+                <order_status>processing</order_status>
+                <title>iDEAL - Targetpay</title>
+                <allowspecific>0</allowspecific>
+            </ideal>
+        </payment>
+    </default>
+</config>
