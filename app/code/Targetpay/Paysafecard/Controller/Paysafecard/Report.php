@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Paysafecard\Controller\Paysafecard;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 /**
  * Targetpay Paysafecard Report Controller

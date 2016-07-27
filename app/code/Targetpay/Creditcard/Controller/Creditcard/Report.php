@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Creditcard\Controller\Creditcard;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 /**
  * Targetpay Creditcard Report Controller

@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Sofort\Model;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
 {

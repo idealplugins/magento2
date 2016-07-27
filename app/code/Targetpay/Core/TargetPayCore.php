@@ -1,5 +1,5 @@
 <?php
-namespace Targetpay;
+namespace Targetpay\Core;
 
 /**
  * @file     Provides support for TargetPay iDEAL, Mister Cash and Sofort Banking

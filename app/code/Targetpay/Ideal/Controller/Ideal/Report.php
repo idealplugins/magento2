@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Ideal\Controller\Ideal;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 /**
  * Targetpay Ideal Report Controller
