@@ -198,7 +198,7 @@ class Paysafecard extends \Magento\Payment\Model\Method\AbstractMethod
         $targetPay->setDescription("Order #$orderId");
 //         $targetPay->setBankId($bankId);
         $targetPay->setReturnUrl(
-            $this->urlBuilder->getUrl('paysafecard/paysafecard/bankreturn', ['_secure' => true, 'order_id' => $orderId])
+            $this->urlBuilder->getUrl('paysafecard/paysafecard/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
             $this->urlBuilder->getUrl('paysafecard/paysafecard/report', ['_secure' => true, 'order_id' => $orderId])

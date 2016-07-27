@@ -216,7 +216,7 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
         $targetPay->setDescription("Order #$orderId");
         $targetPay->setCountryId($countryId);
         $targetPay->setReturnUrl(
-            $this->urlBuilder->getUrl('sofort/sofort/bankreturn', ['_secure' => true, 'order_id' => $orderId])
+            $this->urlBuilder->getUrl('sofort/sofort/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
             $this->urlBuilder->getUrl('sofort/sofort/report', ['_secure' => true, 'order_id' => $orderId])

@@ -13,7 +13,8 @@ define(
         return Component.extend({
             defaults: {
                 template: 'Targetpay_Sofort/payment/form',
-                selectedCountry: null
+                selectedCountry: null,
+                redirectAfterPlaceOrder: false //Fix compatible with CE 2.1.0
             },
 
             getCode: function () {

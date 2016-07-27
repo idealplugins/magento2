@@ -20,75 +20,172 @@ namespace Targetpay;
 /**
  * @class   TargetPay Core class
  */
-
 class TargetPayCore
 {
-    // Constants
 
-    const     MIN_AMOUNT            = 0.84;
-    const     ERR_NO_AMOUNT             = "Geen bedrag meegegeven | No amount given";
-    const     ERR_NO_DESCRIPTION    = "Geen omschrijving meegegeven | No description given";
-    const     ERR_AMOUNT_TOO_LOW    = "Bedrag is te laag | Amount is too low";
-    const     ERR_NO_RTLO           = "Geen rtlo (layoutcode TargetPay) bekend; controleer de module instellingen | No rtlo (layoutcode TargetPay) filled in, check the module settings";
-    const     ERR_NO_TXID           = "Er is een onjuist transactie ID opgegeven | An incorrect transaction ID was given";
-    const     ERR_NO_RETURN_URL         = "Geen of ongeldige return URL | No or invalid return URL";
-    const     ERR_NO_REPORT_URL         = "Geen of ongeldige report URL | No or invalid report URL";
-    const     ERR_IDEAL_NO_BANK         = "Geen bank geselecteerd voor iDEAL | No bank selected for iDEAL";
-    const     ERR_SOFORT_NO_COUNTRY     = "Geen land geselecteerd voor Sofort | No country selected for Sofort";
-    const     ERR_PAYBYINVOICE      = "Fout bij achteraf betalen|Error with paybyinvoice";
-
-    // Constant array's
-
-    protected $paymentOptions       = array("AUTO", "IDE", "MRC", "DEB", "AFT", "WAL", "CC");
-    /*  If payMethod is set to 'AUTO' it will decided on the value of bankId
-	    Then, when requested the bankId list will be filled with
-
-        a) 'IDE' + the bank ID's for iDEAL
-        b) 'MRC' for Mister Cash
-	    c) 'DEB' + countrycode for Sofort Banking, e.g. DEB49 for Germany
-    */
-    protected $minimumAmounts       = array("AUTO" => 84, "IDE" => 84, "MRC" => 49, "DEB" => 10, "AFT" => 1, "WAL" => 10, "CC" => 100);
-
-    protected $checkAPIs            = array("IDE" => "https://www.targetpay.com/ideal/check",
-                                            "MRC" => "https://www.targetpay.com/mrcash/check",
-                                            "DEB" => "https://www.targetpay.com/directebanking/check",
-                                            "AFT" => "https://www.targetpay.com/afterpay/check",
-                                            "WAL" => "https://www.targetpay.com/paysafecard/check",
-                                            "CC" => "https://www.targetpay.com/creditcard_atos/check"
-                                            );
-
-    // Variables
-
-    protected $rtlo                 = null;
-    protected $testMode             = false;
-
-    protected $language                 = "nl";
-    protected $payMethod            = "AUTO"; // Payment Method
-    protected $currency                 = "EUR";
-
-    protected $bankId               = null;
-    protected $appId                = null;
-    protected $amount               = 0;
-    protected $description          = null;
-    protected $returnUrl            = null;  // When using the AUTO-setting; %payMethod% will be replaced by the actual payment method just before starting the payment
-    protected $cancelUrl            = null;  // When using the AUTO-setting; %payMethod% will be replaced by the actual payment method just before starting the payment
-    protected $reportUrl            = null;  // When using the AUTO-setting; %payMethod% will be replaced by the actual payment method just before starting the payment
-
-    protected $bankUrl              = null;
-
-    protected $transactionId        = null;
-    protected $paidStatus           = false;
-    protected $consumerInfo         = array();
-
-    protected $errorMessage             = null;
-
-    protected $parameters           = array(); // Additional parameters
+    const MIN_AMOUNT = 0.84;
+    const ERR_NO_AMOUNT = "Geen bedrag meegegeven | No amount given";
+    const ERR_NO_DESCRIPTION = "Geen omschrijving meegegeven | No description given";
+    const ERR_AMOUNT_TOO_LOW = "Bedrag is te laag | Amount is too low";
+    const ERR_NO_RTLO = "Geen rtlo (layoutcode TargetPay) bekend; controleer de module instellingen | 
+        No rtlo (layoutcode TargetPay) filled in, check the module settings";
+    const ERR_NO_TXID = "Er is een onjuist transactie ID opgegeven | An incorrect transaction ID was given";
+    const ERR_NO_RETURN_URL = "Geen of ongeldige return URL | No or invalid return URL";
+    const ERR_NO_REPORT_URL = "Geen of ongeldige report URL | No or invalid report URL";
+    const ERR_IDEAL_NO_BANK = "Geen bank geselecteerd voor iDEAL | No bank selected for iDEAL";
+    const ERR_SOFORT_NO_COUNTRY = "Geen land geselecteerd voor Sofort | No country selected for Sofort";
+    const ERR_PAYBYINVOICE = "Fout bij achteraf betalen|Error with paybyinvoice";
 
     /**
-     *  Constructor
-     *  @param      int     $rtlo   Layoutcode
+     * Constant array
+     *
+     * @var array
      */
+    protected $paymentOptions = ["AUTO", "IDE", "MRC", "DEB", "AFT", "WAL", "CC"];
 
+    /**
+     * If payMethod is set to 'AUTO' it will decided on the value of bankId
+     * Then, when requested the bankId list will be filled with
+     *  a) 'IDE' + the bank ID's for iDEAL
+     *  b) 'MRC' for Mister Cash
+     *  c) 'DEB' + countrycode for Sofort Banking, e.g. DEB49 for Germany
+     *
+     * @var array
+     */
+    protected $minimumAmounts = [
+        "AUTO" => 84,
+        "IDE" => 84,
+        "MRC" => 49,
+        "DEB" => 10,
+        "AFT" => 1,
+        "WAL" => 10,
+        "CC" => 100
+    ];
+
+    /**
+     * @var array
+     */
+    protected $checkAPIs = [
+        "IDE" => "https://www.targetpay.com/ideal/check",
+        "MRC" => "https://www.targetpay.com/mrcash/check",
+        "DEB" => "https://www.targetpay.com/directebanking/check",
+        "AFT" => "https://www.targetpay.com/afterpay/check",
+        "WAL" => "https://www.targetpay.com/paysafecard/check",
+        "CC" => "https://www.targetpay.com/creditcard_atos/check"
+    ];
+
+    /**
+     * @var string
+     */
+    protected $rtlo = null;
+
+    /**
+     * @var boolean
+     */
+    protected $testMode = false;
+
+    /**
+     * @var string
+     */
+    protected $language = "nl";
+
+    /**
+     * Payment Method
+     *
+     * @var string
+     */
+    protected $payMethod = "AUTO";
+
+    /**
+     * @var string
+     */
+    protected $currency = "EUR";
+
+    /**
+     * @var string
+     */
+    protected $bankId = null;
+
+    /**
+     * @var string
+     */
+    protected $appId = null;
+
+    /**
+     * @var integer
+     */
+    protected $amount = 0;
+
+    /**
+     *
+     * @var string
+     */
+    protected $description = null;
+
+    /**
+     * When using the AUTO-setting;
+     * %payMethod% will be replaced by the actual payment method just before starting the payment
+     *
+     * @var string
+     */
+    protected $returnUrl = null;
+
+    /**
+     * When using the AUTO-setting;
+     * %payMethod% will be replaced by the actual payment method just before starting the payment
+     *
+     * @var string
+     */
+    protected $cancelUrl = null;
+
+    /**
+     * When using the AUTO-setting;
+     * %payMethod% will be replaced by the actual payment method just before starting the payment
+     *
+     * @var string
+     */
+    protected $reportUrl  = null;
+
+    /**
+     * @var string
+     */
+    protected $bankUrl = null;
+
+    /**
+     * @var string
+     */
+    protected $transactionId = null;
+
+    /**
+     * @var boolean
+     */
+    protected $paidStatus = false;
+
+    /**
+     * @var array
+     */
+    protected $consumerInfo = [];
+
+    /**
+     * @var string
+     */
+    protected $errorMessage = null;
+
+    /**
+     * Additional parameters
+     *
+     * @var array
+     */
+    protected $parameters  = [];
+
+    /**
+     * @param string $payMethod
+     * @param string $rtlo
+     * @param string $appId
+     * @param string $language
+     * @param string $testMode
+     * @return boolean
+     */
     public function __construct($payMethod, $rtlo = false, $appId = false, $language = "nl", $testMode = false)
     {
         $payMethod = strtoupper($payMethod);
@@ -103,10 +200,12 @@ class TargetPayCore
         $this->appId = strtolower(preg_replace("/[^a-z\d_]/i", "", $appId));
     }
 
-    /**
-     *  Get list with banks based on PayMethod setting (AUTO, IDE, ... etc.)
-     */
 
+    /**
+     * Get list with banks based on PayMethod setting (AUTO, IDE, ... etc.)
+     *
+     * @return array
+     */
     public function getBankList()
     {
         $url = "https://www.targetpay.com/api/idealplugins?banklist=".urlencode($this->payMethod);
@@ -121,22 +220,22 @@ class TargetPayCore
                 $banks_array["{$bank->bank_id}"] = "{$bank->bank_name}";
             }
         }
-
         return $banks_array;
     }
 
+
     /**
-     *  Start transaction with TargetPay
+     * Start transaction with TargetPay
      *
-     *  Set at least: amount, description, returnUrl, reportUrl (optional: cancelUrl)
-     *  In case of iDEAL: bankId
-     *  In case of Sofort: countryId
+     * Set at least: amount, description, returnUrl, reportUrl (optional: cancelUrl)
+     * In case of iDEAL: bankId
+     * In case of Sofort: countryId
      *
-     *  After starting, it will return a link to the bank if successfull :
-     *      - Link can also be fetched with getBankUrl()
-     *      - Get the transaction id via getTransactionId()
-     *      - Read the errors with getErrorMessage()
-     *      - Get the actual started payment method, in case of auto-setting, using getPayMethod()
+     * After starting, it will return a link to the bank if successfull :
+     * - Link can also be fetched with getBankUrl()
+     * - Get the transaction id via getTransactionId()
+     * - Read the errors with getErrorMessage()
+     * - Get the actual started payment method, in case of auto-setting, using getPayMethod()
      */
     public function startPayment()
     {
@@ -194,8 +293,8 @@ class TargetPayCore
                 "currency=".urlencode($this->currency)."&".
                 (($this->payMethod=="IDE") ? "ver=2&language=nl&" : "").
                 (($this->payMethod=="AFT") ? "ver=2&language=nl&" : "").
-                (($this->payMethod=="MRC") ? "lang=".urlencode($this->getLanguage(array("NL","FR","EN"), "NL"))."&" : "").
-                (($this->payMethod=="DEB") ? "type=1&country=".urlencode($this->countryId)."&lang=".urlencode($this->getLanguage(array("NL","EN","DE"), "DE"))."&" : "").
+                (($this->payMethod=="MRC") ? "lang=" . urlencode($this->getLanguage(array("NL","FR","EN"), "NL")) . "&" : "").
+                (($this->payMethod=="DEB") ? "type=1&country=" . urlencode($this->countryId)."&lang=" . urlencode($this->getLanguage(array("NL","EN","DE"), "DE")) . "&" : "").
                 "userip=".urlencode($_SERVER["REMOTE_ADDR"])."&".
                 "domain=".urlencode($_SERVER["HTTP_HOST"])."&".
                 "returnurl=".urlencode($this->returnUrl)."&".
@@ -220,16 +319,15 @@ class TargetPayCore
     }
 
     /**
-     *  Check transaction with TargetPay
-     *  @param  string  $payMethodId        Payment method's see above
-     *  @param  string  $transactionId      Transaction ID to check
-     *
-     *  Returns true if payment successfull (or testmode) and false if not
-     *
+     * Check transaction with TargetPay
      *  After payment:
-     *  - Read the errors with getErrorMessage()
-     *  - Get user information using getConsumerInfo()
+     * - Read the errors with getErrorMessage()
+     * - Get user information using getConsumerInfo()
      *
+     * @param  string  $payMethodId Payment method's see above
+     * @param  string  $transactionId Transaction ID to check
+     *
+     * @return boolean True if the payment is successfull (or testmode) and false if not
      */
     public function checkPayment($transactionId)
     {
@@ -281,10 +379,11 @@ class TargetPayCore
     }
 
     /**
-     *  [DEPRECATED] checkReportValidity
-     *  Will removed in future versions
-     *  This function used to act as a redundant check on the validity of reports by checking IP addresses
-     *  Because this is bad practice and not necessary it is now removed
+     * Will removed in future versions
+     * This function used to act as a redundant check on the validity of reports by checking IP addresses
+     * Because this is bad practice and not necessary it is now removed
+     *
+     * @deprecated
      */
     public function checkReportValidity($post, $server)
     {
@@ -292,9 +391,8 @@ class TargetPayCore
     }
 
     /**
-     *  PRIVATE FUNCTIONS
+     * PRIVATE FUNCTIONS
      */
-
     protected function httpRequest($url, $method = "GET")
     {
         $ch = curl_init();
@@ -312,9 +410,18 @@ class TargetPayCore
     }
 
     /**
-     *  GETTERS & SETTERS
+     * Bind additional parameter to start request. Safe for chaining.
      */
+    public function bindParam($name, $value)
+    {
+        $this->parameters[$name] = $value;
+        return $this;
+    }
 
+    /**
+     * @param integer $amount
+     * @return boolean
+     */
     public function setAmount($amount)
     {
         $this->amount = round($amount);
@@ -322,24 +429,20 @@ class TargetPayCore
     }
 
     /**
-     * Bind additional parameter to start request. Safe for chaining.
+     * @return integer
      */
-
-    public function bindParam($name, $value)
-    {
-        $this->parameters[$name] = $value;
-        return $this;
-    }
-
     public function getAmount()
     {
         return $this->amount;
     }
 
+    /**
+     * @param string $bankId
+     * @return boolean
+     */
     public function setBankId($bankId)
     {
         // Handle 'mixed' setting => therefore the payMethod must be 'AUTO'
-
         if ($this->payMethod=="AUTO") {
             $bankId = strtoupper($bankId);
             if (substr($bankId, 0, 3)=="IDE") {

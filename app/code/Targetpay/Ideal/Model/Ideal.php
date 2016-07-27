@@ -198,7 +198,7 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
         $targetPay->setDescription("Order #$orderId");
         $targetPay->setBankId($bankId);
         $targetPay->setReturnUrl(
-            $this->urlBuilder->getUrl('ideal/ideal/bankreturn', ['_secure' => true, 'order_id' => $orderId])
+            $this->urlBuilder->getUrl('ideal/ideal/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
             $this->urlBuilder->getUrl('ideal/ideal/report', ['_secure' => true, 'order_id' => $orderId])

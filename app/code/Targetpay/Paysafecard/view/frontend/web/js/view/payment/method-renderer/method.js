@@ -13,6 +13,7 @@ define(
         return Component.extend({
             defaults: {
                 template: 'Targetpay_Paysafecard/payment/form',
+                redirectAfterPlaceOrder: false //Fix compatible with CE 2.1.0
             },
 
             getCode: function () {

@@ -1,18 +1,18 @@
 <?php
-namespace Targetpay\Sofort\Controller\Sofort;
+namespace Targetpay\Creditcard\Controller\Creditcard;
 
 /**
- * Targetpay Sofort BankReturn Controller
+ * Targetpay Creditcard ReturnAction Controller
  *
  * @method GET
  */
-class BankReturn extends \Magento\Framework\App\Action\Action
+class ReturnAction extends \Magento\Framework\App\Action\Action
 {
 
     /**
-     * @var \Targetpay\Sofort\Model\Sofort
+     * @var \Targetpay\Creditcard\Model\Creditcard
      */
-    protected $sofort;
+    protected $creditcard;
     /**
      * @var \Magento\Sales\Model\Order
      */
@@ -36,7 +36,7 @@ class BankReturn extends \Magento\Framework\App\Action\Action
      * @param \Magento\Checkout\Model\Cart $cart
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Psr\Log\LoggerInterface $logger
-     * @param \Targetpay\Sofort\Model\Sofort $sofort
+     * @param \Targetpay\Creditcard\Model\Creditcard $creditcard
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -45,35 +45,35 @@ class BankReturn extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Cart $cart,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Psr\Log\LoggerInterface $logger,
-        \Targetpay\Sofort\Model\Sofort $sofort
+        \Targetpay\Creditcard\Model\Creditcard $creditcard
     ) {
         $this->order = $order;
         $this->cart = $cart;
         $this->resoureConnection = $resourceConnection;
         $this->logger = $logger;
-        $this->sofort = $sofort;
+        $this->creditcard = $creditcard;
         parent::__construct($context);
     }
 
     /**
-     * When a customer return to website from Targetpay Sofort gateway.
+     * When a customer return to website from Targetpay Creditcard gateway.
      *
      * @return void|\Magento\Framework\Controller\Result\Redirect
      */
     public function execute()
     {
-        $countryId = (int) $this->getRequest()->get('country_id');
+        $orderId = (int) $this->getRequest()->get('order_id');
         $db = $this->resoureConnection->getConnection();
         $sql = "SELECT `paid` FROM `targetpay` 
-                WHERE `order_id` = " . $db->quote($countryId) . "
-                AND method=" . $db->quote($this->sofort->getMethodType());
+                WHERE `order_id` = " . $db->quote($orderId) . "
+                AND method=" . $db->quote($this->creditcard->getMethodType());
         $result = $db->fetchAll($sql);
         $paid = $result[0]['paid'];
 
         if ($paid) {
             $this->_redirect('checkout/onepage/success', ['_secure' => true]);
         } else {
-            $order = $this->order->loadByIncrementId($countryId);
+            $order = $this->order->loadByIncrementId($orderId);
             $orderItems = $order->getItemsCollection();
             foreach ($orderItems as $orderItem) {
                 try {

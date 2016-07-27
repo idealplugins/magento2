@@ -198,7 +198,7 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
         $targetPay->setDescription("Order #$orderId");
 //         $targetPay->setBankId($bankId);
         $targetPay->setReturnUrl(
-            $this->urlBuilder->getUrl('creditcard/creditcard/bankreturn', ['_secure' => true, 'order_id' => $orderId])
+            $this->urlBuilder->getUrl('creditcard/creditcard/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
             $this->urlBuilder->getUrl('creditcard/creditcard/report', ['_secure' => true, 'order_id' => $orderId])

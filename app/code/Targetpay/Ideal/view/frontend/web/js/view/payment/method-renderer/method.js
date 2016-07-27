@@ -2,7 +2,7 @@
 /*global define*/
 define(
     [
-         'ko',
+        'ko',
         'jquery',
         'Magento_Checkout/js/view/payment/default',
         'mage/url'
@@ -13,7 +13,8 @@ define(
         return Component.extend({
             defaults: {
                 template: 'Targetpay_Ideal/payment/form',
-                selectedBank: null
+                selectedBank: null,
+                redirectAfterPlaceOrder: false //Fix compatible with CE 2.1.0
             },
 
             getCode: function () {
@@ -33,8 +34,12 @@ define(
                 return true;
             },
 
+            /**
+             * After place order callback
+             */
             afterPlaceOrder: function () {
-                window.location.replace(url.build('ideal/ideal/redirect?_secure=true&bank_id=' + this.selectedBank));
+                var redirectUrl = window.checkoutConfig.payment.ideal.redirectUrl + '?_secure=true&bank_id=' + this.selectedBank;
+                $.mage.redirect(redirectUrl);
             },
 
             /**

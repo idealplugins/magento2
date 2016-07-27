@@ -2,11 +2,11 @@
 namespace Targetpay\Ideal\Controller\Ideal;
 
 /**
- * Targetpay Ideal BankReturn Controller
+ * Targetpay Ideal ReturnAction Controller
  *
  * @method GET
  */
-class BankReturn extends \Magento\Framework\App\Action\Action
+class ReturnAction extends \Magento\Framework\App\Action\Action
 {
 
     /**

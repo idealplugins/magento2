@@ -1,18 +1,18 @@
 <?php
-namespace Targetpay\Mrcash\Controller\Mrcash;
+namespace Targetpay\Paysafecard\Controller\Paysafecard;
 
 /**
- * Targetpay Mrcash BankReturn Controller
+ * Targetpay Paysafecard ReturnAction Controller
  *
  * @method GET
  */
-class BankReturn extends \Magento\Framework\App\Action\Action
+class ReturnAction extends \Magento\Framework\App\Action\Action
 {
 
     /**
-     * @var \Targetpay\Mrcash\Model\Mrcash
+     * @var \Targetpay\Paysafecard\Model\Paysafecard
      */
-    protected $mrcash;
+    protected $paysafecard;
     /**
      * @var \Magento\Sales\Model\Order
      */
@@ -36,7 +36,7 @@ class BankReturn extends \Magento\Framework\App\Action\Action
      * @param \Magento\Checkout\Model\Cart $cart
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Psr\Log\LoggerInterface $logger
-     * @param \Targetpay\Mrcash\Model\Mrcash $mrcash
+     * @param \Targetpay\Paysafecard\Model\Paysafecard $paysafecard
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -45,18 +45,18 @@ class BankReturn extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Cart $cart,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Psr\Log\LoggerInterface $logger,
-        \Targetpay\Mrcash\Model\Mrcash $mrcash
+        \Targetpay\Paysafecard\Model\Paysafecard $paysafecard
     ) {
         $this->order = $order;
         $this->cart = $cart;
         $this->resoureConnection = $resourceConnection;
         $this->logger = $logger;
-        $this->mrcash = $mrcash;
+        $this->paysafecard = $paysafecard;
         parent::__construct($context);
     }
 
     /**
-     * When a customer return to website from Targetpay Mrcash gateway.
+     * When a customer return to website from Targetpay Paysafecard gateway.
      *
      * @return void|\Magento\Framework\Controller\Result\Redirect
      */
@@ -66,7 +66,7 @@ class BankReturn extends \Magento\Framework\App\Action\Action
         $db = $this->resoureConnection->getConnection();
         $sql = "SELECT `paid` FROM `targetpay` 
                 WHERE `order_id` = " . $db->quote($orderId) . "
-                AND method=" . $db->quote($this->mrcash->getMethodType());
+                AND method=" . $db->quote($this->paysafecard->getMethodType());
         $result = $db->fetchAll($sql);
         $paid = $result[0]['paid'];
 
