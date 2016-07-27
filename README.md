@@ -36,11 +36,15 @@ We recommend cloning the repository so you can easily get updates.
 
 	3. Clean cache
 
+	```
 	php bin/magento cache:flush
+	```
 
 	4. Delete static cached if needed
 
+	```
 	rm -rf var/* pub/*
+	```
 
 	5. Enable payment methods in Magento admin
 
