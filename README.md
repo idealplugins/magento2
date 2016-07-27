@@ -21,8 +21,36 @@ We recommend cloning the repository so you can easily get updates.
 
 ### 3. Setting up
 
-Check out the specific installation instructions and tips on https://www.idealplugins.nl/magento2#tab_install
+	How to setup:
 
-## Troubleshooting
+	1. Extract the attachment zip into app/code
+
+	The path will be: app/code/Targetpay/Ideal or app/code/Targetpay/Mrcash, ...
+
+	2. Install new module using the following commands:
+
+	```
+	php bin/magento setup:upgrade
+	php bin/magento setup:di:compile
+	```
+
+	3. Clean cache
+
+	php bin/magento cache:flush
+
+	4. Delete static cached if needed
+
+	rm -rf var/* pub/*
+
+	5. Enable payment methods in Magento admin
+
+	Go to Store > Configuration > Sale > Payment methods
+
+	Newly installed methods will be there
+	Enable them and check/uncheck test mode for testing
+
+	More detailed installation instruction will be available soon on https://www.idealplugins.nl/magento2#tab_install
+
+### 4. Troubleshooting
 
 Please see the FAQ on https://www.idealplugins.nl/magento2#tab_help
