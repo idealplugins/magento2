@@ -8,51 +8,39 @@ namespace Targetpay\Mrcash\Controller\Mrcash;
  */
 class ReturnAction extends \Magento\Framework\App\Action\Action
 {
+    /**
+     * @var \Magento\Checkout\Model\Session
+     */
+    protected $checkoutSession;
+
+    /**
+     * @var \Magento\Framework\App\ResourceConnection
+     */
+    protected $resoureConnection;
 
     /**
      * @var \Targetpay\Mrcash\Model\Mrcash
      */
     protected $mrcash;
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    protected $order;
-    /**
-     * @var \Magento\Checkout\Model\Cart
-     */
-    protected $cart;
-    /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resoureConnection;
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    protected $logger;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Sales\Model\Order $order
      * @param \Magento\Checkout\Model\Cart $cart
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
-     * @param \Psr\Log\LoggerInterface $logger
      * @param \Targetpay\Mrcash\Model\Mrcash $mrcash
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Sales\Model\Order $order,
-        \Magento\Checkout\Model\Cart $cart,
+        \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Psr\Log\LoggerInterface $logger,
         \Targetpay\Mrcash\Model\Mrcash $mrcash
     ) {
-        $this->order = $order;
-        $this->cart = $cart;
-        $this->resoureConnection = $resourceConnection;
-        $this->logger = $logger;
-        $this->mrcash = $mrcash;
         parent::__construct($context);
+        $this->checkoutSession = $checkoutSession;
+        $this->resoureConnection = $resourceConnection;
+        $this->mrcash = $mrcash;
     }
 
     /**
@@ -62,28 +50,21 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+
         $orderId = (int) $this->getRequest()->get('order_id');
         $db = $this->resoureConnection->getConnection();
         $sql = "SELECT `paid` FROM `targetpay` 
                 WHERE `order_id` = " . $db->quote($orderId) . "
                 AND method=" . $db->quote($this->mrcash->getMethodType());
         $result = $db->fetchAll($sql);
-        $paid = $result[0]['paid'];
 
-        if ($paid) {
+        if (isset($result[0]['paid']) && $result[0]['paid']) {
             $this->_redirect('checkout/onepage/success', ['_secure' => true]);
         } else {
-            $order = $this->order->loadByIncrementId($orderId);
-            $orderItems = $order->getItemsCollection();
-            foreach ($orderItems as $orderItem) {
-                try {
-                    $this->cart->addOrderItem($orderItem);
-                } catch (Exception $e) {
-                }
-            }
-            $this->cart->save();
-
-            $this->_redirect('checkout/cart');
+            $this->checkoutSession->restoreQuote();
+            return $resultRedirect->setPath('checkout/cart');
         }
     }
 }

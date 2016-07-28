@@ -1,21 +1,21 @@
 <?php
-namespace Targetpay\Core;
+namespace Targetpay;
 
-/**
- * @file     Provides support for TargetPay iDEAL, Mister Cash and Sofort Banking
- * @author   Yellow Melon B.V.
- * @url      http://www.idealplugins.nl
- * @release  29-09-2014
- * @ver      2.5
- *
- * Changes:
- *
- * v2.1     Cancel url added
- * v2.2     Verify Peer disabled, too many problems with this
- * v2.3     Added paybyinvoice (achteraf betalen) and paysafecard (former Wallie)
- * v2.4     Removed IP_range and deprecated checkReportValidity . Because it is bad practice.
- * v2.5     Added creditcards by ATOS
- */
+    /**
+     * @file     Provides support for TargetPay iDEAL, Mister Cash and Sofort Banking
+     * @author   Yellow Melon B.V.
+     * @url      http://www.idealplugins.nl
+     * @release  29-09-2014
+     * @ver      2.5
+     *
+     * Changes:
+     *
+     * v2.1     Cancel url added
+     * v2.2     Verify Peer disabled, too many problems with this
+     * v2.3     Added paybyinvoice (achteraf betalen) and paysafecard (former Wallie)
+     * v2.4     Removed IP_range and deprecated checkReportValidity . Because it is bad practice.
+     * v2.5     Added creditcards by ATOS
+     */
 
 /**
  * @class   TargetPay Core class
@@ -284,22 +284,22 @@ class TargetPayCore
         $this->reportUrl = str_replace("%payMethod%", $this->payMethod, $this->reportUrl);
 
         $url =  "https://www.targetpay.com/api/idealplugins?".
-                "paymethod=".urlencode($this->payMethod)."&".
-                "app_id=".urlencode($this->appId)."&".
-                "rtlo=".urlencode($this->rtlo)."&".
-                "bank=".urlencode($this->bankId)."&".
-                "amount=".urlencode($this->amount)."&".
-                "description=".urlencode($this->description)."&".
-                "currency=".urlencode($this->currency)."&".
-                (($this->payMethod=="IDE") ? "ver=2&language=nl&" : "").
-                (($this->payMethod=="AFT") ? "ver=2&language=nl&" : "").
-                (($this->payMethod=="MRC") ? "lang=" . urlencode($this->getLanguage(array("NL","FR","EN"), "NL")) . "&" : "").
-                (($this->payMethod=="DEB") ? "type=1&country=" . urlencode($this->countryId)."&lang=" . urlencode($this->getLanguage(array("NL","EN","DE"), "DE")) . "&" : "").
-                "userip=".urlencode($_SERVER["REMOTE_ADDR"])."&".
-                "domain=".urlencode($_SERVER["HTTP_HOST"])."&".
-                "returnurl=".urlencode($this->returnUrl)."&".
-                ((!empty($this->cancelUrl)) ? "cancelurl=".urlencode($this->cancelUrl)."&" : "").
-                "reporturl=".urlencode($this->reportUrl);
+            "paymethod=".urlencode($this->payMethod)."&".
+            "app_id=".urlencode($this->appId)."&".
+            "rtlo=".urlencode($this->rtlo)."&".
+            "bank=".urlencode($this->bankId)."&".
+            "amount=".urlencode($this->amount)."&".
+            "description=".urlencode($this->description)."&".
+            "currency=".urlencode($this->currency)."&".
+            (($this->payMethod=="IDE") ? "ver=2&language=nl&" : "").
+            (($this->payMethod=="AFT") ? "ver=2&language=nl&" : "").
+            (($this->payMethod=="MRC") ? "lang=" . urlencode($this->getLanguage(array("NL","FR","EN"), "NL")) . "&" : "").
+            (($this->payMethod=="DEB") ? "type=1&country=" . urlencode($this->countryId)."&lang=" . urlencode($this->getLanguage(array("NL","EN","DE"), "DE")) . "&" : "").
+            "userip=".urlencode($_SERVER["REMOTE_ADDR"])."&".
+            "domain=".urlencode($_SERVER["HTTP_HOST"])."&".
+            "returnurl=".urlencode($this->returnUrl)."&".
+            ((!empty($this->cancelUrl)) ? "cancelurl=".urlencode($this->cancelUrl)."&" : "").
+            "reporturl=".urlencode($this->reportUrl);
 
         if (is_array($this->parameters)) {
             foreach ($this->parameters as $k => $v) {
@@ -342,10 +342,10 @@ class TargetPayCore
         }
 
         $url =  $this->checkAPIs[$this->payMethod]."?".
-                "rtlo=".urlencode($this->rtlo)."&".
-                "trxid=".urlencode($transactionId)."&".
-                "once=0&".
-                "test=".(($this->testMode) ? "1" : "0");
+            "rtlo=".urlencode($this->rtlo)."&".
+            "trxid=".urlencode($transactionId)."&".
+            "once=0&".
+            "test=".(($this->testMode) ? "1" : "0");
 
         $result = $this->httpRequest($url);
 
@@ -524,12 +524,15 @@ class TargetPayCore
 
     public function getErrorMessage()
     {
-        if ($this->language=="nl") {
-            list ($returnVal) = explode(" | ", $this->errorMessage, 2);
-        } elseif ($this->language=="en") {
-            list ($discard, $returnVal) = explode(" | ", $this->errorMessage, 2);
-        } else {
-            $returnVal = $this->errorMessage;
+        $returnVal = '';
+        if(!empty($this->errorMessage)) {
+            if ($this->language == "nl") {
+                list ($returnVal) = explode(" | ", $this->errorMessage, 2);
+            } elseif ($this->language == "en") {
+                list ($discard, $returnVal) = explode(" | ", $this->errorMessage, 2);
+            } else {
+                $returnVal = $this->errorMessage;
+            }
         }
         return $returnVal;
     }

@@ -1,6 +1,9 @@
 <?php
 namespace Targetpay\Paysafecard\Controller\Paysafecard;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Controller\ResultFactory;
+
 /**
  * Targetpay Paysafecard Redirect Controller
  *
@@ -9,27 +12,25 @@ namespace Targetpay\Paysafecard\Controller\Paysafecard;
 class Redirect extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Targetpay\Paysafecard\Model\Paysafecard
-     */
-    protected $paysafecard;
-    /**
-     * @var \Magento\Framework\Message\ManagerInterface
-     */
-    protected $messageManager;
-    /**
      * @var \Magento\Checkout\Model\Session
      */
     protected $checkoutSession;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
     /**
+     * @var \Targetpay\Paysafecard\Model\Paysafecard
+     */
+    protected $paysafecard;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Targetpay\Paysafecard\Model\Paysafecard $paysafecard
      * @param \Magento\Checkout\Model\Session $checkoutSession
      * @param \Psr\Log\LoggerInterface $logger
+     * @param \Targetpay\Paysafecard\Model\Paysafecard $paysafecard
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -38,10 +39,10 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Session $checkoutSession,
         \Psr\Log\LoggerInterface $logger
     ) {
-        $this->paysafecard = $paysafecard;
+        parent::__construct($context);
         $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
-        parent::__construct($context);
+        $this->paysafecard = $paysafecard;
     }
 
     /**
@@ -51,14 +52,26 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+
         try {
             $paysafecardUrl = $this->paysafecard->setupPayment();
             $this->_redirect($paysafecardUrl);
+            return;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addExceptionMessage(
+                $e,
+                $e->getMessage()
+                );
         } catch (\Exception $e) {
-            $this->messageManager->addException($e, __('Something went wrong, please try again later'));
+            $this->messageManager->addExceptionMessage(
+                $e,
+                __('Something went wrong, please try again later')
+                );
             $this->logger->critical($e);
-            $this->checkoutSession->restoreQuote();
-            $this->_redirect('checkout/cart');
         }
+        $this->checkoutSession->restoreQuote();
+        return $resultRedirect->setPath('checkout/cart');
     }
 }

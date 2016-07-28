@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Sofort\Controller\Sofort;
 
-use Targetpay\Core\TargetPayCore;
+use Targetpay\TargetPayCore;
 
 /**
  * Targetpay Sofort Report Controller
@@ -15,22 +15,27 @@ class Report extends \Magento\Framework\App\Action\Action
      * @var \Targetpay\Sofort\Model\Sofort
      */
     protected $sofort;
+
     /**
      * @var \Magento\Sales\Model\Order
      */
     protected $order;
+
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
     protected $resoureConnection;
+
     /**
      * @var \Magento\Backend\Model\Locale\Resolver
      */
     protected $localeResolver;
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
     protected $scopeConfig;
+
     /**
      * @var \Magento\Framework\DB\Transaction
      */

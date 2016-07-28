@@ -8,23 +8,16 @@ namespace Targetpay\Creditcard\Controller\Creditcard;
  */
 class ReturnAction extends \Magento\Framework\App\Action\Action
 {
-
     /**
      * @var \Targetpay\Creditcard\Model\Creditcard
      */
     protected $creditcard;
+
     /**
-     * @var \Magento\Sales\Model\Order
+     * @var \Magento\Checkout\Model\Session
      */
-    protected $order;
-    /**
-     * @var \Magento\Checkout\Model\Cart
-     */
-    protected $cart;
-    /**
-     * @var \Magento\Framework\App\ResourceConnection
-     */
-    protected $resoureConnection;
+    protected $checkoutSession;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
@@ -41,18 +34,14 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
-        \Magento\Sales\Model\Order $order,
-        \Magento\Checkout\Model\Cart $cart,
+        \Magento\Checkout\Model\Session $checkoutSession,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
-        \Psr\Log\LoggerInterface $logger,
         \Targetpay\Creditcard\Model\Creditcard $creditcard
     ) {
-        $this->order = $order;
-        $this->cart = $cart;
-        $this->resoureConnection = $resourceConnection;
-        $this->logger = $logger;
-        $this->creditcard = $creditcard;
         parent::__construct($context);
+        $this->checkoutSession = $checkoutSession;
+        $this->resoureConnection = $resourceConnection;
+        $this->creditcard = $creditcard;
     }
 
     /**
@@ -62,28 +51,21 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+
         $orderId = (int) $this->getRequest()->get('order_id');
         $db = $this->resoureConnection->getConnection();
         $sql = "SELECT `paid` FROM `targetpay` 
                 WHERE `order_id` = " . $db->quote($orderId) . "
                 AND method=" . $db->quote($this->creditcard->getMethodType());
         $result = $db->fetchAll($sql);
-        $paid = $result[0]['paid'];
 
-        if ($paid) {
+        if (isset($result[0]['paid']) && $result[0]['paid']) {
             $this->_redirect('checkout/onepage/success', ['_secure' => true]);
         } else {
-            $order = $this->order->loadByIncrementId($orderId);
-            $orderItems = $order->getItemsCollection();
-            foreach ($orderItems as $orderItem) {
-                try {
-                    $this->cart->addOrderItem($orderItem);
-                } catch (Exception $e) {
-                }
-            }
-            $this->cart->save();
-
-            $this->_redirect('checkout/cart');
+            $this->checkoutSession->restoreQuote();
+            return $resultRedirect->setPath('checkout/cart');
         }
     }
 }

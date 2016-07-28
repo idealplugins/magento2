@@ -1,6 +1,9 @@
 <?php
 namespace Targetpay\Creditcard\Controller\Creditcard;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Controller\ResultFactory;
+
 /**
  * Targetpay Creditcard Redirect Controller
  *
@@ -9,21 +12,19 @@ namespace Targetpay\Creditcard\Controller\Creditcard;
 class Redirect extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Targetpay\Creditcard\Model\Creditcard
-     */
-    protected $creditcard;
-    /**
-     * @var \Magento\Framework\Message\ManagerInterface
-     */
-    protected $messageManager;
-    /**
      * @var \Magento\Checkout\Model\Session
      */
     protected $checkoutSession;
+
     /**
      * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
+
+    /**
+     * @var \Targetpay\Creditcard\Model\Creditcard
+     */
+    protected $creditcard;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context
@@ -38,10 +39,10 @@ class Redirect extends \Magento\Framework\App\Action\Action
         \Magento\Checkout\Model\Session $checkoutSession,
         \Psr\Log\LoggerInterface $logger
     ) {
-        $this->creditcard = $creditcard;
+        parent::__construct($context);
         $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
-        parent::__construct($context);
+        $this->creditcard = $creditcard;
     }
 
     /**
@@ -51,14 +52,26 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
+        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
+
         try {
             $creditcardUrl = $this->creditcard->setupPayment();
             $this->_redirect($creditcardUrl);
+            return;
+        } catch (LocalizedException $e) {
+            $this->messageManager->addExceptionMessage(
+                $e,
+                $e->getMessage()
+            );
         } catch (\Exception $e) {
-            $this->messageManager->addException($e, __('Something went wrong, please try again later'));
+            $this->messageManager->addExceptionMessage(
+                $e,
+                __('Something went wrong, please try again later')
+            );
             $this->logger->critical($e);
-            $this->checkoutSession->restoreQuote();
-            $this->_redirect('checkout/cart');
         }
+        $this->checkoutSession->restoreQuote();
+        return $resultRedirect->setPath('checkout/cart');
     }
 }

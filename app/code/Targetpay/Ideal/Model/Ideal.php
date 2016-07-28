@@ -1,11 +1,10 @@
 <?php
 namespace Targetpay\Ideal\Model;
 
-use Targetpay\Core\TargetPayCore;
+use Targetpay\TargetPayCore;
 
 class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
 {
-
     const METHOD_CODE = 'ideal';
     const METHOD_TYPE = 'IDE';
     const APP_ID = 'f8ca4794a1792886bb88060ca0685c1e';
@@ -16,94 +15,112 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
      * @var string
      */
     protected $_code = self::METHOD_CODE;
+
     /**
      * Payment method type
      *
      * @var string
      */
     protected $_tp_method  = self::METHOD_TYPE;
+
     /**
      * Payment app id
      *
      * @var string
      */
     protected $appId  = self::APP_ID;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_isGateway = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canAuthorize = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canCapture = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canCapturePartial = false;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canRefund  = false;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canVoid  = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canUseInternal = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canUseCheckout = true;
+
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canUseForMultishipping  = true;
+
     /**
      * Availability option
      *
      * @var bool
      */
     protected $_canSaveCc = false;
+
     /**
      * @var \Magento\Framework\Url
      */
     protected $urlBuilder;
+
     /**
      * @var \Magento\Checkout\Model\Session
      */
     protected $checkoutSession;
+
     /**
      * @var \Magento\Sales\Model\Order
      */
     protected $order;
+
     /**
      * @var \Magento\Framework\Locale\Resolver
      */
     protected $localeResolver;
+
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
@@ -177,11 +194,13 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
         $order = $this->getOrder();
 
         if (!$order->getId()) {
-            throw new \Magento\Checkout\Exception(__('Cannot load order #' . $lastOrderId));
+            throw new \Magento\Checkout\Exception(__('Cannot load order #' . $order->getRealOrderId()));
         }
 
-        if ($order->getGrandTotal() < 0.84) {
-            throw new \Magento\Checkout\Exception(__('The total amount should be at least 0.85'));
+        if ($order->getGrandTotal() < TargetPayCore::MIN_AMOUNT) {
+            throw new \Magento\Checkout\Exception(
+                __('The total amount should be at least ' . TargetPayCore::MIN_AMOUNT)
+            );
         }
 
         $orderId = $order->getRealOrderId();
@@ -201,12 +220,13 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
             $this->urlBuilder->getUrl('ideal/ideal/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
-            $this->urlBuilder->getUrl('ideal/ideal/report', ['_secure' => true, 'order_id' => $orderId])
+            "http://hoachatclorin.com/tuan/index.php?_secure=true&order_id={$orderId}"
+//             $this->urlBuilder->getUrl('ideal/ideal/report', ['_secure' => true, 'order_id' => $orderId])
         );
         $bankUrl = $targetPay->startPayment();
 
         if (!$bankUrl) {
-            throw new \Magento\Checkout\Exception(__("TargetPay error: {$targetPay->getErrorMessage()}"));
+            throw new \Exception(__("TargetPay error: {$targetPay->getErrorMessage()}"));
         }
 
         $db = $this->resoureConnection->getConnection();
