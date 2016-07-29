@@ -9,24 +9,22 @@ namespace Targetpay\Creditcard\Controller\Creditcard;
 class ReturnAction extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Targetpay\Creditcard\Model\Creditcard
-     */
-    protected $creditcard;
-
-    /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $logger;
+    private $logger;
+
+    /**
+     * @var \Targetpay\Creditcard\Model\Creditcard
+     */
+    private $creditcard;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context
-     * @param \Magento\Sales\Model\Order $order
-     * @param \Magento\Checkout\Model\Cart $cart
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Psr\Log\LoggerInterface $logger
      * @param \Targetpay\Creditcard\Model\Creditcard $creditcard

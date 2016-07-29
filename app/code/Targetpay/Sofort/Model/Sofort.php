@@ -5,7 +5,6 @@ use Targetpay\TargetPayCore;
 
 class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
 {
-
     const METHOD_CODE = 'sofort';
     const METHOD_TYPE = 'DEB';
     const APP_ID = 'f8ca4794a1792886bb88060ca0685c1e';
@@ -22,33 +21,6 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
      * @var string
      */
     protected $_code = self::METHOD_CODE;
-
-    /**
-     * Payment method type
-     *
-     * @var string
-     */
-    protected $_tp_method  = self::METHOD_TYPE;
-
-    /**
-     * Payment app id
-     *
-     * @var string
-     */
-    protected $appId  = self::APP_ID;
-
-    /**
-     * Payment country list
-     *
-     * @var string
-     */
-    protected $countries  = [
-        self::COUNTRY_DEUTSCHLAND => 'Deutschland',
-        self::COUNTRY_OSTERREICH => 'Osterreich',
-        self::COUNTRY_DIE_SCHWEIZ => 'Die Schweiz',
-        self::COUNTRY_BELGIE => 'Belgie',
-        self::COUNTRY_ITALIE => 'Italie',
-    ];
 
     /**
      * Availability option
@@ -123,27 +95,55 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
     /**
      * @var \Magento\Framework\Url
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var \Magento\Sales\Model\Order
      */
-    protected $order;
+    private $order;
 
     /**
      * @var \Magento\Framework\Locale\Resolver
      */
-    protected $localeResolver;
+    private $localeResolver;
 
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
-    protected $resoureConnection;
+    private $resoureConnection;
+
+    /**
+     * Payment method type
+     *
+     * @var string
+     */
+    private $tpMethod  = self::METHOD_TYPE;
+
+    /**
+     * Payment app id
+     *
+     * @var string
+     */
+    private $appId  = self::APP_ID;
+
+    /**
+     * Payment country list
+     *
+     * @var string
+     */
+    private $countries  = [
+        self::COUNTRY_DEUTSCHLAND => 'Deutschland',
+        self::COUNTRY_OSTERREICH => 'Osterreich',
+        self::COUNTRY_DIE_SCHWEIZ => 'Die Schweiz',
+        self::COUNTRY_BELGIE => 'Belgie',
+        self::COUNTRY_ITALIE => 'Italie',
+    ];
+
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -226,7 +226,7 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
         $language = ($this->localeResolver->getLocale() == 'nl_NL') ? "nl" : "en";
 
         $targetPay = new TargetPayCore(
-            $this->_tp_method,
+            $this->tpMethod,
             $this->_scopeConfig->getValue('payment/sofort/rtlo'),
             $this->appId,
             $language,
@@ -239,8 +239,7 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
             $this->urlBuilder->getUrl('sofort/sofort/return', ['_secure' => true, 'order_id' => $orderId])
         );
         $targetPay->setReportUrl(
-            "http://hoachatclorin.com/tuan/index.php?_secure=true&order_id={$orderId}"
-//             $this->urlBuilder->getUrl('sofort/sofort/report', ['_secure' => true, 'order_id' => $orderId])
+            $this->urlBuilder->getUrl('sofort/sofort/report', ['_secure' => true, 'order_id' => $orderId])
         );
         $bankUrl = $targetPay->startPayment();
 
@@ -252,7 +251,7 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
         $db->query("
             INSERT INTO `targetpay` SET 
             `order_id`=" . $db->quote($orderId).",
-            `method`=" . $db->quote($this->_tp_method) . ",
+            `method`=" . $db->quote($this->tpMethod) . ",
             `targetpay_txid`=" . $db->quote($targetPay->getTransactionId()));
 
         return $bankUrl;
@@ -266,10 +265,10 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function getMethodType()
     {
-        if (empty($this->_tp_method)) {
+        if (empty($this->tpMethod)) {
             throw new \Magento\Framework\Exception\LocalizedException(__('We cannot retrieve the payment method type'));
         }
-        return $this->_tp_method;
+        return $this->tpMethod;
     }
 
     /**

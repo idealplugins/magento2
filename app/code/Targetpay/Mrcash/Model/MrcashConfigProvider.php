@@ -3,23 +3,25 @@ namespace Targetpay\Mrcash\Model;
 
 class MrcashConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
-
     /**
      * @var string
      */
-    protected $methodCode = \Targetpay\Mrcash\Model\Mrcash::METHOD_CODE;
+    private $methodCode = \Targetpay\Mrcash\Model\Mrcash::METHOD_CODE;
+
     /**
      * @var \Targetpay\Mrcash\Model\Mrcash
      */
-    protected $method;
+    private $method;
+
     /**
      * @var \Magento\Framework\Escaper
      */
-    protected $escaper;
+    private $escaper;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Escaper $escaper

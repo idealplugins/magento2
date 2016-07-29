@@ -41,7 +41,7 @@ class TargetPayCore
      *
      * @var array
      */
-    protected $paymentOptions = ["AUTO", "IDE", "MRC", "DEB", "AFT", "WAL", "CC"];
+    private $paymentOptions = ["AUTO", "IDE", "MRC", "DEB", "AFT", "WAL", "CC"];
 
     /**
      * If payMethod is set to 'AUTO' it will decided on the value of bankId
@@ -52,7 +52,7 @@ class TargetPayCore
      *
      * @var array
      */
-    protected $minimumAmounts = [
+    private $minimumAmounts = [
         "AUTO" => 84,
         "IDE" => 84,
         "MRC" => 49,
@@ -65,7 +65,7 @@ class TargetPayCore
     /**
      * @var array
      */
-    protected $checkAPIs = [
+    private $checkAPIs = [
         "IDE" => "https://www.targetpay.com/ideal/check",
         "MRC" => "https://www.targetpay.com/mrcash/check",
         "DEB" => "https://www.targetpay.com/directebanking/check",
@@ -77,50 +77,50 @@ class TargetPayCore
     /**
      * @var string
      */
-    protected $rtlo = null;
+    private $rtlo = null;
 
     /**
      * @var boolean
      */
-    protected $testMode = false;
+    private $testMode = false;
 
     /**
      * @var string
      */
-    protected $language = "nl";
+    private $language = "nl";
 
     /**
      * Payment Method
      *
      * @var string
      */
-    protected $payMethod = "AUTO";
+    private $payMethod = "AUTO";
 
     /**
      * @var string
      */
-    protected $currency = "EUR";
+    private $currency = "EUR";
 
     /**
      * @var string
      */
-    protected $bankId = null;
+    private $bankId = null;
 
     /**
      * @var string
      */
-    protected $appId = null;
+    private $appId = null;
 
     /**
      * @var integer
      */
-    protected $amount = 0;
+    private $amount = 0;
 
     /**
      *
      * @var string
      */
-    protected $description = null;
+    private $description = null;
 
     /**
      * When using the AUTO-setting;
@@ -128,7 +128,7 @@ class TargetPayCore
      *
      * @var string
      */
-    protected $returnUrl = null;
+    private $returnUrl = null;
 
     /**
      * When using the AUTO-setting;
@@ -136,7 +136,7 @@ class TargetPayCore
      *
      * @var string
      */
-    protected $cancelUrl = null;
+    private $cancelUrl = null;
 
     /**
      * When using the AUTO-setting;
@@ -144,39 +144,39 @@ class TargetPayCore
      *
      * @var string
      */
-    protected $reportUrl  = null;
+    private $reportUrl  = null;
 
     /**
      * @var string
      */
-    protected $bankUrl = null;
+    private $bankUrl = null;
 
     /**
      * @var string
      */
-    protected $transactionId = null;
+    private $transactionId = null;
 
     /**
      * @var boolean
      */
-    protected $paidStatus = false;
+    private $paidStatus = false;
 
     /**
      * @var array
      */
-    protected $consumerInfo = [];
+    private $consumerInfo = [];
 
     /**
      * @var string
      */
-    protected $errorMessage = null;
+    private $errorMessage = null;
 
     /**
      * Additional parameters
      *
      * @var array
      */
-    protected $parameters  = [];
+    private $parameters  = [];
 
     /**
      * @param string $payMethod

@@ -18,26 +18,12 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_code = self::METHOD_CODE;
 
     /**
-     * Payment method type
-     *
-     * @var string
-     */
-    protected $_tp_method  = self::METHOD_TYPE;
-
-    /**
-     * Payment app id
-     *
-     * @var string
-     */
-    protected $appId  = self::APP_ID;
-
-    /**
      * Availability option
      *
      * @var bool
      */
     protected $_isGateway = true;
-
+    
     /**
      * Availability option
      *
@@ -102,29 +88,43 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canSaveCc = false;
 
     /**
+     * Payment method type
+     *
+     * @var string
+     */
+    private $tpMethod  = self::METHOD_TYPE;
+
+    /**
+     * Payment app id
+     *
+     * @var string
+     */
+    private $appId  = self::APP_ID;
+
+    /**
      * @var \Magento\Framework\Url
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var \Magento\Sales\Model\Order
      */
-    protected $order;
+    private $order;
 
     /**
      * @var \Magento\Framework\Locale\Resolver
      */
-    protected $localeResolver;
+    private $localeResolver;
 
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
-    protected $resoureConnection;
+    private $resoureConnection;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -207,7 +207,7 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
         $language = ($this->localeResolver->getLocale() == 'nl_NL') ? "nl" : "en";
 
         $targetPay = new TargetPayCore(
-            $this->_tp_method,
+            $this->tpMethod,
             $this->_scopeConfig->getValue('payment/creditcard/rtlo'),
             $this->appId,
             $language,
@@ -232,7 +232,7 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
         $db->query("
             INSERT INTO `targetpay` SET 
             `order_id`=" . $db->quote($orderId).",
-            `method`=" . $db->quote($this->_tp_method) . ",
+            `method`=" . $db->quote($this->tpMethod) . ",
             `targetpay_txid`=" . $db->quote($targetPay->getTransactionId()));
 
         return $bankUrl;
@@ -246,10 +246,10 @@ class Creditcard extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function getMethodType()
     {
-        if (empty($this->_tp_method)) {
+        if (empty($this->tpMethod)) {
             throw new \Magento\Framework\Exception\LocalizedException(__('We cannot retrieve the payment method type'));
         }
-        return $this->_tp_method;
+        return $this->tpMethod;
     }
 
     /**

@@ -14,17 +14,17 @@ class Redirect extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var \Psr\Log\LoggerInterface
      */
-    protected $logger;
+    private $logger;
 
     /**
      * @var \Targetpay\Paysafecard\Model\Paysafecard
      */
-    protected $paysafecard;
+    private $paysafecard;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context

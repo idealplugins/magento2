@@ -7,19 +7,22 @@ class IdealConfigProvider implements \Magento\Checkout\Model\ConfigProviderInter
     /**
      * @var string
      */
-    protected $methodCode = \Targetpay\Ideal\Model\Ideal::METHOD_CODE;
+    private $methodCode = \Targetpay\Ideal\Model\Ideal::METHOD_CODE;
+
     /**
      * @var \Targetpay\Ideal\Model\Ideal
      */
-    protected $method;
+    private $method;
+
     /**
      * @var \Magento\Framework\Escaper
      */
-    protected $escaper;
+    private $escaper;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Escaper $escaper
@@ -57,7 +60,7 @@ class IdealConfigProvider implements \Magento\Checkout\Model\ConfigProviderInter
      *
      * @return array
      */
-    protected function getBanks()
+    private function getBanks()
     {
         return $this->method->getBankList();
     }

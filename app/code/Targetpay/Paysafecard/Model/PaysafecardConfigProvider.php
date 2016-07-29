@@ -3,23 +3,25 @@ namespace Targetpay\Paysafecard\Model;
 
 class PaysafecardConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
-
     /**
      * @var string
      */
-    protected $methodCode = \Targetpay\Paysafecard\Model\Paysafecard::METHOD_CODE;
+    private $methodCode = \Targetpay\Paysafecard\Model\Paysafecard::METHOD_CODE;
+
     /**
      * @var \Targetpay\Paysafecard\Model\Paysafecard
      */
-    protected $method;
+    private $method;
+
     /**
      * @var \Magento\Framework\Escaper
      */
-    protected $escaper;
+    private $escaper;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Escaper $escaper

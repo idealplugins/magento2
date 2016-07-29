@@ -10,31 +10,35 @@ use Targetpay\TargetPayCore;
  */
 class Report extends \Magento\Framework\App\Action\Action
 {
-
     /**
      * @var \Targetpay\Paysafecard\Model\Paysafecard
      */
-    protected $paysafecard;
+    private $paysafecard;
+
     /**
      * @var \Magento\Sales\Model\Order
      */
-    protected $order;
+    private $order;
+
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
-    protected $resoureConnection;
+    private $resoureConnection;
+
     /**
      * @var \Magento\Backend\Model\Locale\Resolver
      */
-    protected $localeResolver;
+    private $localeResolver;
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    protected $scopeConfig;
+    private $scopeConfig;
+
     /**
      * @var \Magento\Framework\DB\Transaction
      */
-    protected $transaction;
+    private $transaction;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context

@@ -13,17 +13,17 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
     /**
      * @var \Magento\Checkout\Model\Session
      */
-    protected $checkoutSession;
+    private $checkoutSession;
 
     /**
      * @var \Magento\Framework\App\ResourceConnection
      */
-    protected $resoureConnection;
+    private $resoureConnection;
 
     /**
      * @var \Targetpay\Ideal\Model\Ideal
      */
-    protected $ideal;
+    private $ideal;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context

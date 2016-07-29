@@ -3,23 +3,25 @@ namespace Targetpay\Sofort\Model;
 
 class SofortConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
-
     /**
      * @var string
      */
-    protected $methodCode = \Targetpay\Sofort\Model\Sofort::METHOD_CODE;
+    private $methodCode = \Targetpay\Sofort\Model\Sofort::METHOD_CODE;
+
     /**
      * @var \Targetpay\Sofort\Model\Sofort
      */
-    protected $method;
+    private $method;
+
     /**
      * @var \Magento\Framework\Escaper
      */
-    protected $escaper;
+    private $escaper;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Escaper $escaper
@@ -57,7 +59,7 @@ class SofortConfigProvider implements \Magento\Checkout\Model\ConfigProviderInte
      *
      * @return array
      */
-    protected function getCountries()
+    private function getCountries()
     {
         return $this->method->getCountryList();
     }

@@ -3,23 +3,25 @@ namespace Targetpay\Creditcard\Model;
 
 class CreditcardConfigProvider implements \Magento\Checkout\Model\ConfigProviderInterface
 {
-
     /**
      * @var string
      */
-    protected $methodCode = \Targetpay\Creditcard\Model\Creditcard::METHOD_CODE;
+    private $methodCode = \Targetpay\Creditcard\Model\Creditcard::METHOD_CODE;
+
     /**
      * @var \Targetpay\Creditcard\Model\Creditcard
      */
-    protected $method;
+    private $method;
+
     /**
      * @var \Magento\Framework\Escaper
      */
-    protected $escaper;
+    private $escaper;
+
     /**
      * @var \Magento\Framework\UrlInterface
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param \Magento\Framework\Escaper $escaper

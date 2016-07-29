@@ -14,7 +14,7 @@ define(
             defaults: {
                 template: 'Targetpay_Ideal/payment/form',
                 selectedBank: null,
-                redirectAfterPlaceOrder: false //Fix compatible with CE 2.1.0
+                redirectAfterPlaceOrder: false //Compatible with CE 2.1.0
             },
 
             getCode: function () {
