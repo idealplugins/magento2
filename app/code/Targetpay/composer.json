@@ -2,18 +2,18 @@
   "name": "targetpay/core",
   "description": "TargetPay Meta package for installing payment plugins for Magento 2. Before you can use the plugins, please sign up for a TargetPay account on www.targetpay.com",
   "type": "metapackage",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "require": {
     "php": "~5.5.0|~5.6.0|~7.0.0",
     "magento/framework": "~100.0.4",
-    "targetpay/core": "0.1.1"
+    "targetpay/core": "0.1.2"
   },
   "suggest": {
-    "targetpay/ideal": "0.1.1",
-    "targetpay/creditcard": "0.1.1",
-    "targetpay/mrcash": "0.1.1",
-    "targetpay/paysafecard": "0.1.1",
-    "targetpay/sofort": "0.1.1"
+    "targetpay/ideal": "0.1.2",
+    "targetpay/creditcard": "0.1.2",
+    "targetpay/mrcash": "0.1.2",
+    "targetpay/paysafecard": "0.1.2",
+    "targetpay/sofort": "0.1.2"
   },
   "license": [
     "OSL-3.0",
