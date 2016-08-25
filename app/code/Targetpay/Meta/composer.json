@@ -1,12 +1,11 @@
 {
-	"name" : "targetpay/ideal",
-	"description" : "TargetPay iDEAL plugin for Magento 2. Before you can use the plugin, please sign up for a TargetPay account on www.targetpay.com",
+	"name" : "targetpay/meta",
+	"description" : "TargetPay Meta package for installing payment plugins for Magento 2. Before you can use the plugins, please sign up for a TargetPay account on www.targetpay.com",
 	"type" : "magento2-module",
-	"version" : "0.1.1",
+	"version" : "0.1.2",
 	"require" : {
 		"php" : "~5.5.0|~5.6.0|~7.0.0",
-		"magento/framework" : "~100.0.4",
-		"targetpay/core" : "0.1.2"
+		"magento/framework" : "~100.0.4"
 	},
 	"license" : [
 		"OSL-3.0",
@@ -21,7 +20,7 @@
 	"autoload" : {
 		"files" : ["registration.php"],
 		"psr-4" : {
-			"Targetpay\\Ideal\\" : ""
+			"Targetpay\\Meta\\" : ""
 		}
 	}
 }
