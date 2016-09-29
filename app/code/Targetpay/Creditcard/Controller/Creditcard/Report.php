@@ -79,7 +79,8 @@ class Report extends \Magento\Framework\App\Action\Action
         $orderId = (int)$this->getRequest()->getParam('order_id');
         $txId = (string)$this->getRequest()->getParam('trxid', null);
         if (!isset($txId)) {
-            die("invalid callback, txid missing");
+            $this->getResponse()->setBody("invalid callback, txid missing");
+            return;
         }
 
         $db = $this->resoureConnection->getConnection();
@@ -90,13 +91,15 @@ class Report extends \Magento\Framework\App\Action\Action
         
         $result = $db->fetchAll($sql);
         if (!count($result)) {
-            die('transaction not found');
+            $this->getResponse()->setBody('transaction not found');
+            return;
         }
 
         $alreadyPaid = ((!empty($result[0]['paid'])) ? true : false);
 
         if ($alreadyPaid) {
-            die('callback already processed');
+            $this->getResponse()->setBody('callback already processed');
+            return;
         }
 
         $language = ($this->localeResolver->getLocale() == 'nl_NL') ? 'nl' : 'en';
@@ -113,7 +116,8 @@ class Report extends \Magento\Framework\App\Action\Action
         $testMode = (bool) $this->scopeConfig->getValue('payment/creditcard/testmode');
         if ($testMode) {
             $paymentStatus = true; // Always OK if in testmode
-            echo "Testmode... ";
+            $this->getResponse()->setBody("Testmode... ");
+            return;
         }
 
         if ($paymentStatus) {
@@ -142,15 +146,15 @@ class Report extends \Magento\Framework\App\Action\Action
                 $currentOrder->sendNewOrderEmail();
                 $currentOrder->setEmailSent(true);
                 $currentOrder->save();
-                echo "Paid... ";
+                $this->getResponse()->setBody("Paid... ");
             } else {
-                echo "Already completed, skipped... ";
+                $this->getResponse()->setBody("Already completed, skipped... ");
             }
         } else {
-            echo "Not paid " . $targetPay->getErrorMessage() . "... ";
+            $this->getResponse()->setBody("Not paid " . $targetPay->getErrorMessage() . "... ");
         }
 
         echo "(Magento, 15-06-2016)";
-        die();
+        return;
     }
 }
