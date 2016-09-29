@@ -49,14 +49,14 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
      *
      * @var bool
      */
-    protected $_canRefund  = false;
+    protected $_canRefund = false;
 
     /**
      * Availability option
      *
      * @var bool
      */
-    protected $_canVoid  = true;
+    protected $_canVoid = true;
 
     /**
      * Availability option
@@ -77,7 +77,7 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
      *
      * @var bool
      */
-    protected $_canUseForMultishipping  = true;
+    protected $_canUseForMultishipping = true;
 
     /**
      * Availability option
@@ -116,14 +116,14 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
      *
      * @var string
      */
-    private $tpMethod  = self::METHOD_TYPE;
+    private $tpMethod = self::METHOD_TYPE;
 
     /**
      * Payment app id
      *
      * @var string
      */
-    private $appId  = self::APP_ID;
+    private $appId = self::APP_ID;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -230,11 +230,23 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
         $db = $this->resoureConnection->getConnection();
         $db->query("
             INSERT INTO `targetpay` SET 
-            `order_id`=" . $db->quote($orderId).",
+            `order_id`=" . $db->quote($orderId) . ",
             `method`=" . $db->quote($this->tpMethod) . ",
             `targetpay_txid`=" . $db->quote($targetPay->getTransactionId()));
 
         return $bankUrl;
+    }
+
+    /**
+     * Retrieve current order
+     *
+     * @return \Magento\Sales\Model\Order
+     */
+    public function getOrder()
+    {
+        $orderId = $this->checkoutSession->getLastOrderId();
+
+        return $this->order->load($orderId);
     }
 
     /**
@@ -248,6 +260,7 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
         if (empty($this->tpMethod)) {
             throw new \Magento\Framework\Exception\LocalizedException(__('We cannot retrieve the payment method type'));
         }
+
         return $this->tpMethod;
     }
 
@@ -262,18 +275,8 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
         if (empty($this->appId)) {
             throw new \Magento\Framework\Exception\LocalizedException(__('We cannot retrieve the payment app id'));
         }
-        return $this->appId;
-    }
 
-    /**
-     * Retrieve current order
-     *
-     * @return \Magento\Sales\Model\Order
-     */
-    public function getOrder()
-    {
-        $orderId = $this->checkoutSession->getLastOrderId();
-        return $this->order->load($orderId);
+        return $this->appId;
     }
 
     /**
@@ -283,7 +286,7 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function getBankList()
     {
-        $language = ($this->localeResolver->getLocale()  == 'nl_NL') ? 'nl' : 'en';
+        $language = ($this->localeResolver->getLocale() == 'nl_NL') ? 'nl' : 'en';
         $targetPay = new TargetPayCore(
             $this->tpMethod,
             $this->_scopeConfig->getValue('payment/ideal/rtlo'),
@@ -291,6 +294,7 @@ class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
             $language,
             false
         );
+
         return $targetPay->getBankList();
     }
 }
