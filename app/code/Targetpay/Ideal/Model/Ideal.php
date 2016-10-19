@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Ideal\Model;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 class Ideal extends \Magento\Payment\Model\Method\AbstractMethod
 {

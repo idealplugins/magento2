@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Sofort\Controller\Sofort;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 /**
  * Targetpay Sofort Report Controller

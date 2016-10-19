@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Mrcash\Controller\Mrcash;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 /**
  * Targetpay Mrcash Report Controller

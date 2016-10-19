@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Mrcash\Model;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 class Mrcash extends \Magento\Payment\Model\Method\AbstractMethod
 {

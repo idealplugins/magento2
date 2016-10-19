@@ -1,7 +1,7 @@
 <?php
 namespace Targetpay\Paysafecard\Model;
 
-use Targetpay\TargetPayCore;
+use Targetpay\Core\TargetPayCore;
 
 class Paysafecard extends \Magento\Payment\Model\Method\AbstractMethod
 {
