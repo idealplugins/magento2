@@ -1,6 +1,8 @@
 <?php
 namespace Targetpay\Creditcard\Controller\Creditcard;
 
+use Magento\Framework\Controller\ResultFactory;
+
 /**
  * Targetpay Creditcard ReturnAction Controller
  *

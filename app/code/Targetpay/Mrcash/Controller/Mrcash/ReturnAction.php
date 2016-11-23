@@ -1,6 +1,8 @@
 <?php
 namespace Targetpay\Mrcash\Controller\Mrcash;
 
+use Magento\Framework\Controller\ResultFactory;
+
 /**
  * Targetpay Mrcash ReturnAction Controller
  *
