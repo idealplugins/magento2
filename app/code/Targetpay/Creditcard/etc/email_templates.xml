@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="creditcard_email_template_failure"
+    label="Targetpay Creditcard - Failure"
+    file="failure.html" type="html"
+    module="Targetpay_Creditcard"
+    area="frontend" />
+</config>

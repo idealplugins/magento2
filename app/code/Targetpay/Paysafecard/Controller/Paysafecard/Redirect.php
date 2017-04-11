@@ -52,7 +52,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        /* @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         try {
@@ -63,12 +63,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $this->messageManager->addExceptionMessage(
                 $e,
                 $e->getMessage()
-                );
+            );
         } catch (\Exception $e) {
             $this->messageManager->addExceptionMessage(
                 $e,
                 __('Something went wrong, please try again later')
-                );
+            );
             $this->logger->critical($e);
         }
         $this->checkoutSession->restoreQuote();

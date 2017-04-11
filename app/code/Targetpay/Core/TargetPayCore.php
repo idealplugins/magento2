@@ -236,6 +236,8 @@ class TargetPayCore
      * - Get the transaction id via getTransactionId()
      * - Read the errors with getErrorMessage()
      * - Get the actual started payment method, in case of auto-setting, using getPayMethod()
+     *
+     * @return boolean|string Bank URL is returned if success, otherwise False
      */
     public function startPayment()
     {
@@ -326,7 +328,6 @@ class TargetPayCore
      *
      * @param  string  $payMethodId Payment method's see above
      * @param  string  $transactionId Transaction ID to check
-     *
      * @return boolean True if the payment is successfull (or testmode) and false if not
      */
     public function checkPayment($transactionId)
@@ -391,7 +392,11 @@ class TargetPayCore
     }
 
     /**
-     * PRIVATE FUNCTIONS
+     * Handling a http request
+     *
+     * @param  string $url    Requested URL
+     * @param  string $method HTTP method. Default is GET
+     * @return mixed
      */
     protected function httpRequest($url, $method = "GET")
     {
@@ -411,6 +416,10 @@ class TargetPayCore
 
     /**
      * Bind additional parameter to start request. Safe for chaining.
+     *
+     * @param  string $name  Parameter name
+     * @param  string $value Parameter value
+     * @return $this the object itself
      */
     public function bindParam($name, $value)
     {
@@ -419,6 +428,8 @@ class TargetPayCore
     }
 
     /**
+     * Set amount value
+     *
      * @param integer $amount
      * @return boolean
      */
@@ -429,6 +440,8 @@ class TargetPayCore
     }
 
     /**
+     * Retrieve amount
+     *
      * @return integer
      */
     public function getAmount()
@@ -437,6 +450,8 @@ class TargetPayCore
     }
 
     /**
+     * Set bank id value
+     *
      * @param string $bankId
      * @return boolean
      */
@@ -473,59 +488,111 @@ class TargetPayCore
         }
     }
 
+    /**
+     * Retrieve bank id
+     *
+     * @return string
+     */
     public function getBankId()
     {
         return $this->bankId;
     }
 
+    /**
+     * Retrieve bank url
+     *
+     * @return string
+     */
     public function getBankUrl()
     {
         return $this->bankUrl;
     }
 
+    /**
+     * Retrieve customer information
+     *
+     * @return string
+     */
     public function getConsumerInfo()
     {
         return $this->consumerInfo;
     }
 
+    /**
+     * Set country id value
+     *
+     * @param string $countryId
+     * @return boolean
+     */
     public function setCountryId($countryId)
     {
         $this->countryId = strtolower(substr($countryId, 0, 2));
         return true;
     }
 
+    /**
+     * Retrieve country id
+     *
+     * @return string
+     */
     public function getCountryId()
     {
         return $this->countryId;
     }
 
+    /**
+     * Set currency value
+     *
+     * @param string $currency
+     * @return boolean
+     */
     public function setCurrency($currency)
     {
         $this->currency = strtoupper(substr($currency, 0, 3));
         return true;
     }
 
+    /**
+     * Retrieve currency
+     *
+     * @return string
+     */
     public function getCurrency()
     {
         return $this->currency;
     }
 
-
+    /**
+     * Set description value
+     *
+     * @param string $description
+     * @return boolean
+     */
     public function setDescription($description)
     {
         $this->description = substr($description, 0, 32);
         return true;
     }
 
+    /**
+     * Retrieve description
+     *
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
     }
 
+    /**
+     * Get error message
+     *
+     * @return string
+     */
     public function getErrorMessage()
     {
         $returnVal = '';
-        if(!empty($this->errorMessage)) {
+        if (!empty($this->errorMessage)) {
             if ($this->language == "nl") {
                 list ($returnVal) = explode(" | ", $this->errorMessage, 2);
             } elseif ($this->language == "en") {
@@ -537,6 +604,13 @@ class TargetPayCore
         return $returnVal;
     }
 
+    /**
+     * Get language
+     *
+     * @param  boolean $allowList
+     * @param  boolean $defaultLanguage
+     * @return string
+     */
     public function getLanguage($allowList = false, $defaultLanguage = false)
     {
         if (!$allowList) {
@@ -550,16 +624,32 @@ class TargetPayCore
         }
     }
 
+    /**
+     * Retrieve payment paid status
+     *
+     * @return boolean
+     */
     public function getPaidStatus()
     {
         return $this->paidStatus;
     }
 
+    /**
+     * Retrieve payment method
+     *
+     * @return string
+     */
     public function getPayMethod()
     {
         return $this->payMethod;
     }
 
+    /**
+     * Set report URL value
+     *
+     * @param string $reportUrl Report URL
+     * @return boolean
+     */
     public function setReportUrl($reportUrl)
     {
         if (preg_match('|(\w+)://([^/:]+)(:\d+)?(.*)|', $reportUrl)) {
@@ -570,11 +660,22 @@ class TargetPayCore
         }
     }
 
+    /**
+     * Retrieve report URL
+     *
+     * @return string
+     */
     public function getReportUrl()
     {
         return $this->reportUrl;
     }
 
+    /**
+     * Set return URL value
+     *
+     * @param string $returnUrl Return URL
+     * @return boolean
+     */
     public function setReturnUrl($returnUrl)
     {
         if (preg_match('|(\w+)://([^/:]+)(:\d+)?(.*)|', $returnUrl)) {
@@ -585,11 +686,22 @@ class TargetPayCore
         }
     }
 
+    /**
+     * Retrieve return URL
+     *
+     * @return string
+     */
     public function getReturnUrl()
     {
         return $this->returnUrl;
     }
 
+    /**
+     * Set cancel URL value
+     *
+     * @param string $cancelUrl Cancel URL
+     * @return boolean
+     */
     public function setCancelUrl($cancelUrl)
     {
         if (preg_match('|(\w+)://([^/:]+)(:\d+)?(.*)|', $cancelUrl)) {
@@ -600,17 +712,33 @@ class TargetPayCore
         }
     }
 
+    /**
+     * Retrieve cancel URL
+     *
+     * @return string
+     */
     public function getCancelUrl()
     {
         return $this->cancelUrl;
     }
 
+    /**
+     * Set transaction id
+     *
+     * @param string $transactionId
+     * @return boolean
+     */
     public function setTransactionId($transactionId)
     {
         $this->transactionId = substr($transactionId, 0, 32);
         return true;
     }
 
+    /**
+     * Retrieve transaction id
+     *
+     * @return string
+     */
     public function getTransactionId()
     {
         return $this->transactionId;

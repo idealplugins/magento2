@@ -11,16 +11,6 @@ use Targetpay\Core\TargetPayCore;
 class Report extends \Magento\Framework\App\Action\Action
 {
     /**
-     * @var \Targetpay\Ideal\Model\Ideal
-     */
-    private $ideal;
-
-    /**
-     * @var \Magento\Sales\Model\Order
-     */
-    private $order;
-
-    /**
      * @var \Magento\Framework\App\ResourceConnection
      */
     private $resoureConnection;
@@ -41,11 +31,27 @@ class Report extends \Magento\Framework\App\Action\Action
     private $transaction;
 
     /**
+     * @var \Magento\Framework\Mail\Template\TransportBuilder
+     */
+    private $transportBuilder;
+
+    /**
+     * @var \Magento\Sales\Model\Order
+     */
+    private $order;
+
+    /**
+     * @var \Targetpay\Ideal\Model\Ideal
+     */
+    private $ideal;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      * @param \Magento\Backend\Model\Locale\Resolver $localeResolver
      * @param \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
      * @param \Magento\Framework\DB\Transaction $transaction
+     * @param \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder
      * @param \Magento\Sales\Model\Order $order
      * @param \Targetpay\Ideal\Model\Ideal $ideal
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
@@ -56,16 +62,18 @@ class Report extends \Magento\Framework\App\Action\Action
         \Magento\Backend\Model\Locale\Resolver $localeResolver,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\DB\Transaction $transaction,
+        \Magento\Framework\Mail\Template\TransportBuilder $transportBuilder,
         \Magento\Sales\Model\Order $order,
         \Targetpay\Ideal\Model\Ideal $ideal
     ) {
+        parent::__construct($context);
         $this->resoureConnection = $resourceConnection;
         $this->localeResolver = $localeResolver;
         $this->scopeConfig = $scopeConfig;
         $this->transaction = $transaction;
+        $this->transportBuilder = $transportBuilder;
         $this->order = $order;
         $this->ideal = $ideal;
-        parent::__construct($context);
     }
 
     /**
@@ -84,7 +92,8 @@ class Report extends \Magento\Framework\App\Action\Action
         }
 
         $db = $this->resoureConnection->getConnection();
-        $sql = "SELECT `paid` FROM `targetpay` 
+        $tableName   = $db->getTableName('targetpay');
+        $sql = "SELECT `paid` FROM ".$tableName." 
                 WHERE `order_id` = " . $db->quote($orderId) . " 
                 AND `targetpay_txid` = " . $db->quote($txId) . " 
                 AND method=" . $db->quote($this->ideal->getMethodType());
@@ -120,7 +129,7 @@ class Report extends \Magento\Framework\App\Action\Action
         }
 
         if ($paymentStatus) {
-            $sql = "UPDATE `targetpay` 
+            $sql = "UPDATE ".$tableName."
                 SET `paid` = now() WHERE `order_id` = '" . $orderId . "'
                 AND method='" . $this->ideal->getMethodType() . "'
                 AND `targetpay_txid` = '" . $txId . "'";
@@ -150,6 +159,26 @@ class Report extends \Magento\Framework\App\Action\Action
                 $this->getResponse()->setBody("Already completed, skipped... ");
             }
         } else {
+            /* Send failure payment email to customer */
+            $storeScope = \Magento\Store\Model\ScopeInterface::SCOPE_STORE;
+            $transport = $this->transportBuilder
+                ->setTemplateIdentifier(
+                    $this->scopeConfig->getValue('payment/ideal/email_template/failure'),
+                    $storeScope
+                )
+                ->setTemplateOptions([
+                    'area' => \Magento\Framework\App\Area::AREA_FRONTEND,
+                    'store' => $currentOrder->getStoreId(),
+                ])
+                ->setTemplateVars(['order' => $currentOrder])
+                ->setFrom([
+                    'name' => $this->scopeConfig->getValue('trans_email/ident_support/name', $storeScope),
+                    'email' => $this->scopeConfig->getValue('trans_email/ident_support/email', $storeScope)
+                ])
+                ->addTo($currentOrder->getCustomerEmail())
+                ->getTransport();
+
+            $transport->sendMessage();
             $this->getResponse()->setBody("Not paid " . $targetPay->getErrorMessage() . "... ");
         }
 

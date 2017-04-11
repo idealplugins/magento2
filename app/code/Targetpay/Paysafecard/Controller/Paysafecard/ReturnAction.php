@@ -51,12 +51,13 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        /* @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
         $orderId = (int) $this->getRequest()->get('order_id');
         $db = $this->resoureConnection->getConnection();
-        $sql = "SELECT `paid` FROM `targetpay` 
+        $tableName   = $db->getTableName('targetpay');
+        $sql = "SELECT `paid` FROM ".$tableName." 
                 WHERE `order_id` = " . $db->quote($orderId) . "
                 AND method=" . $db->quote($this->paysafecard->getMethodType());
         $result = $db->fetchAll($sql);

@@ -11,9 +11,11 @@
                 <complete_status>4</complete_status>
                 <autocreate_invoice>1</autocreate_invoice>
                 <model>Targetpay\Mrcash\Model\Mrcash</model>
-                <order_status>processing</order_status>
                 <title>Bancontact/Mister Cash - Targetpay</title>
                 <allowspecific>0</allowspecific>
+                <email_template>
+                    <failure>mrcash_email_template_failure</failure>
+                </email_template>
             </mrcash>
         </payment>
     </default>

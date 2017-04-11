@@ -52,7 +52,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
+        /* @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
         try {
             $countryId = $this->getRequest()->getParam('country_id');

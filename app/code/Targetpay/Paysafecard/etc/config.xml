@@ -11,9 +11,11 @@
                 <complete_status>4</complete_status>
                 <autocreate_invoice>1</autocreate_invoice>
                 <model>Targetpay\Paysafecard\Model\Paysafecard</model>
-                <order_status>processing</order_status>
                 <title>Paysafecard - Targetpay</title>
                 <allowspecific>0</allowspecific>
+                <email_template>
+                    <failure>paysafecard_email_template_failure</failure>
+                </email_template>
             </paysafecard>
         </payment>
     </default>

@@ -4,15 +4,18 @@
     <default>
         <payment>
             <ideal>
-                <debug>1</debug>
+                <sort_order>1</sort_order>
                 <active>1</active>
-                <order_status>processing</order_status>
+                <rtlo>39411</rtlo> <!-- // Default TargetPay -->
+                <order_status>1</order_status>
                 <complete_status>4</complete_status>
                 <autocreate_invoice>1</autocreate_invoice>
                 <model>Targetpay\Ideal\Model\Ideal</model>
                 <title>iDEAL - Targetpay</title>
-                <sort_order>1</sort_order>
-                <rtlo>39411</rtlo> <!-- // Default TargetPay -->
+                <allowspecific>0</allowspecific>
+                <email_template>
+                    <failure>ideal_email_template_failure</failure>
+                </email_template>
             </ideal>
         </payment>
     </default>

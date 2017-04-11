@@ -248,8 +248,9 @@ class Sofort extends \Magento\Payment\Model\Method\AbstractMethod
         }
 
         $db = $this->resoureConnection->getConnection();
+        $tableName   = $db->getTableName('targetpay');
         $db->query("
-            INSERT INTO `targetpay` SET 
+            INSERT INTO ".$tableName." SET 
             `order_id`=" . $db->quote($orderId).",
             `method`=" . $db->quote($this->tpMethod) . ",
             `targetpay_txid`=" . $db->quote($targetPay->getTransactionId()));
