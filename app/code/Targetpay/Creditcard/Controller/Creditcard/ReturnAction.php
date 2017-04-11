@@ -56,7 +56,7 @@ class ReturnAction extends \Magento\Framework\App\Action\Action
 
         $orderId = (int) $this->getRequest()->get('order_id');
         $db = $this->resoureConnection->getConnection();
-        $tableName   = $db->getTableName('targetpay');
+        $tableName   = $this->resoureConnection->getTableName('targetpay');
         $sql = "SELECT `paid` FROM ".$tableName." 
                 WHERE `order_id` = " . $db->quote($orderId) . "
                 AND method=" . $db->quote($this->creditcard->getMethodType());

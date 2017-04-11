@@ -228,7 +228,7 @@ class Paysafecard extends \Magento\Payment\Model\Method\AbstractMethod
         }
 
         $db = $this->resoureConnection->getConnection();
-        $tableName   = $db->getTableName('targetpay');
+        $tableName   = $this->resoureConnection->getTableName('targetpay');
         $db->query("
             INSERT INTO ".$tableName." SET 
             `order_id`=" . $db->quote($orderId).",

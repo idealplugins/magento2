@@ -92,7 +92,7 @@ class Report extends \Magento\Framework\App\Action\Action
         }
 
         $db = $this->resoureConnection->getConnection();
-        $tableName   = $db->getTableName('targetpay');
+        $tableName   = $this->resoureConnection->getTableName('targetpay');
         $sql = "SELECT `paid` FROM ".$tableName."
                 WHERE `order_id` = " . $db->quote($orderId) . " 
                 AND `targetpay_txid` = " . $db->quote($txId) . " 
