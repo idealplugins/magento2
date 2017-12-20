@@ -1,0 +1,77 @@
+<?php
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+* See COPYING.txt for license details.
+*/
+$om = \Magento\Framework\App\ObjectManager::getInstance();
+$resolver = $om->get('Magento\Framework\Locale\Resolver');
+
+$total_amount = $this->helper('Magento\Framework\Pricing\Helper\Data')->currency($block->getOrder()->getGrandTotal(),true,false);
+// @codingStandardsIgnoreFile
+?>
+<?php /** @var $block \Digiwallet\Bankwire\Block\Success */ ?>
+<?php if($resolver->getLocale() == "nl_BE" || $resolver->getLocale() == "nl_NL"):?>
+    <?php if(!empty($block->getOrder())):?>
+        <div class="bankwire-info">
+            <h4><?php echo __('Uw bestelling is verwerkt'); ?></h4>
+            <p>
+            	<?php echo sprintf(__("U ontvangt uw bestelling zodra we de betaling per bank ontvangen hebben. <br>Zou u zo vriendelijk willen zijn het totaalbedrag van %s over te maken op bankrekening <b> %s </b> t.n.v. %s* ?"), 
+            	    $total_amount, 
+            	    $block->getIban(),
+            	    $block->getBeneficiary()
+            	   ); ?>
+            </p>
+            <p>
+            	<?php echo sprintf(__("Vermeld daarbij als betaalkenmerk <b>%s</b>, zodat de betaling automatisch verwerkt kan worden. <br/> Zodra dit gebeurd is ontvangt u een mail op %s ter bevestiging."),
+            	    $block->getTrxid(),
+            	    $block->getEmail()
+            	    );?>
+            </p>
+            <p>
+            	<?php echo sprintf(__("Mocht het nodig zijn voor betalingen vanuit het buitenland, dan is de BIC code van de bank %s en de naam van de bank is '%s'. Zorg ervoor dat u kiest voor kosten in het buitenland voor eigen rekening (optie: OUR), anders zal het bedrag wat binnenkomt te laag zijn."),
+            	    $block->getBic(),
+            	    $block->getBank()
+            	    );
+            	?>
+            </p>
+                <i><?php echo __("*De betalingen voor onze webwinkel worden verwerkt door TargetMedia. TargetMedia is gecertificeerd als Collecting Payment Service Provider door Currence. Dat houdt in dat zij aan strenge eisen dient te voldoen als het gaat om de veiligheid van de betalingen voor jou als klant en ons als webwinkel."); ?></i>
+            </p>
+        </div>
+        <?php else: ?>
+        	<div class="bankwire-info">
+            	<h4><?php echo __("Er werd geen transactienummer gevonden."); ?></h4>
+            </div>
+    <?php endif;?>
+ <?php else:?>
+ 	<?php if(!empty($block->getOrder())):?>
+        <div class="bankwire-info">
+            <h4><?php echo __('Thank you for ordering in our webshop'); ?></h4>
+            <p>
+            	<?php echo sprintf(__("You will receive your order as soon as we receive payment from the bank. <br> Would you be so friendly to transfer the total amount of %s to the bankaccount <b> %s </b> in name of %s* ?"), 
+            	    $total_amount, 
+            	    $block->getIban(),
+            	    $block->getBeneficiary()
+            	   ); ?>
+            </p>
+            <p>
+            	<?php echo sprintf(__("State the payment feature <b>%s</b>, this way the payment can be automatically processed.<br> As soon as this happens you shall receive a confirmation mail on %s."),
+            	    $block->getTrxid(),
+            	    $block->getEmail()
+            	    );?>
+            </p>
+            <p>
+            	<?php echo sprintf(__("If it is necessary for payments abroad, then the BIC code from the bank %s and the name of the bank is %s."),
+            	    $block->getBic(),
+            	    $block->getBank()
+            	    );
+            	?>
+            </p>
+                <i><?php echo __("* Payment for our webstore is processed by TargetMedia. TargetMedia is certified as a Collecting Payment Service Provider by Currence. This means we set the highest security standards when is comes to security of payment for you as a customer and us as a webshop."); ?></i>
+            </p>
+        </div>
+        <?php else: ?>
+        	<div class="bankwire-info">
+            	<h4><?php echo __("Your transaction can not be found"); ?></h4>
+            </div>
+    <?php endif;?>
+ <?php endif;?>

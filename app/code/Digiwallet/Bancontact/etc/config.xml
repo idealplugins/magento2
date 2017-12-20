@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <bancontact>
+                <sort_order>2</sort_order>
+                <active>1</active>
+                <rtlo>93929</rtlo> <!-- // Default Digiwallet -->
+                <apitoken></apitoken>
+                <order_status>1</order_status>
+                <complete_status>4</complete_status>
+                <autocreate_invoice>1</autocreate_invoice>
+                <model>Digiwallet\Bancontact\Model\Bancontact</model>
+                <title>Bancontact</title>
+                <allowspecific>0</allowspecific>
+                <email_template>
+                    <failure>bancontact_email_template_failure</failure>
+                </email_template>
+            </bancontact>
+        </payment>
+    </default>
+</config>

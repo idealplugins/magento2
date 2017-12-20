@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <ideal>
+                <sort_order>1</sort_order>
+                <active>1</active>
+                <rtlo>39411</rtlo> <!-- // Default Digiwallet -->
+                <apitoken></apitoken>
+                <order_status>1</order_status>
+                <complete_status>4</complete_status>
+                <autocreate_invoice>1</autocreate_invoice>
+                <model>Digiwallet\Ideal\Model\Ideal</model>
+                <title>iDEAL</title>
+                <allowspecific>0</allowspecific>
+                <email_template>
+                    <failure>ideal_email_template_failure</failure>
+                </email_template>
+            </ideal>
+        </payment>
+    </default>
+</config>
