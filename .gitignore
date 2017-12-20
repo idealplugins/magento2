@@ -5,3 +5,10 @@
 /app/code/Targetpay/Paysafecard/*.zip
 /app/code/Targetpay/Sofort/*.zip
 /.idea
+/checkout.psd
+/generate_packages.sh
+/idealplugins-support.docx
+/idealplugins-support.pdf
+/prod_thumb.png
+/admin.png
+/checkout.png
